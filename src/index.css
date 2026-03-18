@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-omeka-blue: #2b71b1;
+  --color-omeka-dark: #1a1a1a;
+  --color-omeka-bg: #f5f5f5;
+  --color-omeka-border: #d1d1d1;
+  --color-archival-gold: #b8860b;
+}
+
+@layer base {
+  body {
+    @apply bg-omeka-bg text-omeka-dark antialiased;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-zinc-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-zinc-400;
+}
+
+/* Omeka S Admin Styles */
+.resource-table th {
+  @apply bg-zinc-100 border-b border-omeka-border text-[10px] font-black text-zinc-500 uppercase tracking-widest px-4 py-2;
+}
+
+.resource-table td {
+  @apply border-b border-omeka-border px-4 py-3 text-sm;
+}
+
+.section-header {
+  @apply bg-zinc-200 border-y border-omeka-border px-4 py-1.5 text-[10px] font-black text-zinc-600 uppercase tracking-widest flex items-center gap-2;
+}

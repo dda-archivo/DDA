@@ -1,0 +1,5 @@
+{
+  "name": "DDA - Archivo Digital UNT",
+  "description": "Explorador de patrimonio documental y audiovisual del Departamento de Documentación y Archivo de la UNT. Implementa estándares ISAD(G), ISAAR(CPF), ISDIAH, FIAF y FIAT.",
+  "requestFramePermissions": []
+}
