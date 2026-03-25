@@ -1,0 +1,60 @@
+/* Estilos base para el tema DDA Archivo Digital */
+:root {
+    --primary-color: #1a1a1a;
+    --accent-color: #d4af37;
+    --bg-color: #f5f5f5;
+    --text-color: #333;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    margin: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.main-header {
+    background: var(--primary-color);
+    color: white;
+    padding: 2rem 0;
+}
+
+.main-header h1 a {
+    color: white;
+    text-decoration: none;
+}
+
+.main-nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+}
+
+.main-nav a {
+    color: #ccc;
+    text-decoration: none;
+}
+
+.main-nav a:hover {
+    color: white;
+}
+
+.main-content {
+    padding: 3rem 0;
+    min-height: 60vh;
+}
+
+.main-footer {
+    background: #eee;
+    padding: 2rem 0;
+    text-align: center;
+    border-top: 1px solid #ddd;
+}

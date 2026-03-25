@@ -1,0 +1,50 @@
+<?php
+/**
+ * @var \Omeka\View\Renderer\PhpRenderer $this
+ * @var \Omeka\Api\Representation\SiteRepresentation $site
+ * @var \Omeka\Api\Representation\PageRepresentation $page
+ */
+$escape = $this->plugin('escapeHtml');
+$siteTitle = $site->title();
+$this->htmlElement('html')->setAttribute('lang', $this->lang());
+$this->headMeta()->setCharset('utf-8');
+$this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1');
+$this->headTitle($siteTitle)->setSeparator(' · ');
+$this->headTitle()->append($this->setting('installation_title', 'Omeka S'));
+$this->headLink()->prependStylesheet($this->assetUrl('css/style.css'));
+?>
+<?php echo $this->doctype(); ?>
+<?php echo $this->htmlElement('html'); ?>
+    <head>
+        <?php echo $this->headMeta(); ?>
+        <?php echo $this->headTitle(); ?>
+        <?php echo $this->headLink(); ?>
+        <?php echo $this->headStyle(); ?>
+        <?php echo $this->headScript(); ?>
+    </head>
+    <?php echo $this->htmlElement('body'); ?>
+        <header class="main-header">
+            <div class="container">
+                <h1><?php echo $site->link($siteTitle); ?></h1>
+                <nav class="main-nav">
+                    <?php echo $site->publicNav()->menu()->render(); ?>
+                </nav>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <?php echo $this->content; ?>
+            </div>
+        </main>
+
+        <footer class="main-footer">
+            <div class="container">
+                <p><?php echo $this->themeSetting('footer_text'); ?></p>
+                <div class="credits">
+                    &copy; <?php echo date('Y'); ?> <?php echo $escape($siteTitle); ?> - DDA UNT
+                </div>
+            </div>
+        </footer>
+    </body>
+</html>
