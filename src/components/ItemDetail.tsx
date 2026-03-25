@@ -29,6 +29,8 @@ interface ItemDetailProps {
 }
 
 export default function ItemDetail({ item, onBack }: ItemDetailProps) {
+  const [activeTab, setActiveTab] = React.useState<"values" | "media" | "linked">("values");
+
   return (
     <div className="flex-1 bg-white overflow-y-auto">
       {/* Admin Toolbar */}
@@ -64,149 +66,218 @@ export default function ItemDetail({ item, onBack }: ItemDetailProps) {
         {/* Main Content */}
         <div className="lg:col-span-8 space-y-8">
           <div className="flex border-b border-omeka-border mb-6">
-            <button className="px-4 py-2 text-xs font-bold text-omeka-blue border-b-2 border-omeka-blue">Values</button>
-            <button className="px-4 py-2 text-xs font-bold text-zinc-400 hover:text-zinc-600">Media</button>
-            <button className="px-4 py-2 text-xs font-bold text-zinc-400 hover:text-zinc-600">Linked Resources</button>
+            <button 
+              onClick={() => setActiveTab("values")}
+              className={`px-4 py-2 text-xs font-bold transition-all ${activeTab === "values" ? "text-omeka-blue border-b-2 border-omeka-blue" : "text-zinc-400 hover:text-zinc-600"}`}
+            >
+              Values
+            </button>
+            <button 
+              onClick={() => setActiveTab("media")}
+              className={`px-4 py-2 text-xs font-bold transition-all ${activeTab === "media" ? "text-omeka-blue border-b-2 border-omeka-blue" : "text-zinc-400 hover:text-zinc-600"}`}
+            >
+              Media ({item.media?.length || 0})
+            </button>
+            <button 
+              onClick={() => setActiveTab("linked")}
+              className={`px-4 py-2 text-xs font-bold transition-all ${activeTab === "linked" ? "text-omeka-blue border-b-2 border-omeka-blue" : "text-zinc-400 hover:text-zinc-600"}`}
+            >
+              Linked Resources
+            </button>
           </div>
 
-          {/* 1. Área de Identificación */}
-          <MetadataSection title="1. Área de Identificación" icon={Info}>
-            <MetadataField label="Código de Referencia" value={item.identificacion.codigoReferencia} standard="ISAD" />
-            <MetadataField label="Título" value={item.identificacion.titulo} standard="ISAD/FIAF" />
-            <MetadataField label="Fecha de Creación/Emisión" value={item.identificacion.fechaCreacion} standard="ISAD/FIAT" />
-            <MetadataField label="Nivel de Descripción" value={item.identificacion.nivelDescripcion} standard="ISAD" />
-            <MetadataField label="Tipo de Recurso" value={item.identificacion.tipoRecurso} standard="FIAF/ISAD" />
-            <MetadataField label="Volumen y Soporte" value={item.identificacion.volumenSoporte} />
-            <MetadataField label="Identificador de Acceso (NAS)" value={item.identificacion.identificadorAccesoNAS} />
-            <MetadataField label="Identificador Externo (DOI/Handle)" value={item.identificacion.identificadorExterno} />
-            <MetadataField label="Identificador del Repositorio" value={item.identificacion.identificadorRepositorio} standard="ISDIAH" />
-            <MetadataField label="Ubicación del Depósito" value={item.identificacion.ubicacionDeposito} standard="ISDIAH" />
-          </MetadataSection>
+          {activeTab === "values" && (
+            <div className="space-y-8 animate-in fade-in duration-300">
+              {/* 1. Área de Identificación */}
+              <MetadataSection title="1. Área de Identificación" icon={Info}>
+                <MetadataField label="Código de Referencia" value={item.identificacion.codigoReferencia} standard="ISAD" />
+                <MetadataField label="Título" value={item.identificacion.titulo} standard="ISAD/FIAF" />
+                <MetadataField label="Fecha de Creación/Emisión" value={item.identificacion.fechaCreacion} standard="ISAD/FIAT" />
+                <MetadataField label="Nivel de Descripción" value={item.identificacion.nivelDescripcion} standard="ISAD" />
+                <MetadataField label="Tipo de Recurso" value={item.identificacion.tipoRecurso} standard="FIAF/ISAD" />
+                <MetadataField label="Volumen y Soporte" value={item.identificacion.volumenSoporte} />
+                <MetadataField label="Identificador de Acceso (NAS)" value={item.identificacion.identificadorAccesoNAS} />
+                <MetadataField label="Identificador Externo (DOI/Handle)" value={item.identificacion.identificadorExterno} />
+                <MetadataField label="Identificador del Repositorio" value={item.identificacion.identificadorRepositorio} standard="ISDIAH" />
+                <MetadataField label="Ubicación del Depósito" value={item.identificacion.ubicacionDeposito} standard="ISDIAH" />
+              </MetadataSection>
 
-          {/* 2. Área de Contexto y Autoría */}
-          <MetadataSection title="2. Área de Contexto y Autoría" icon={Users}>
-            <MetadataField label="Productor / Creador" value={item.contexto.productor} standard="ISAD/ISAAR" />
-            <MetadataField label="Fechas del Productor" value={item.contexto.fechasProductor} standard="ISAAR" />
-            <MetadataField label="Créditos de Producción" value={item.contexto.creditosProduccion} standard="FIAF/FIAT" />
-            <MetadataField label="Historia Institucional / Biográfica" value={item.contexto.historiaInstitucional} standard="ISAAR" />
-            <MetadataField label="Historia Archivística" value={item.contexto.historiaArchivistica} standard="ISAD" />
-            <MetadataField label="Forma de Ingreso" value={item.contexto.formaIngreso} standard="ISAD" />
-          </MetadataSection>
+              {/* 2. Área de Contexto y Autoría */}
+              <MetadataSection title="2. Área de Contexto y Autoría" icon={Users}>
+                <MetadataField label="Productor / Creador" value={item.contexto.productor} standard="ISAD/ISAAR" />
+                <MetadataField label="Fechas del Productor" value={item.contexto.fechasProductor} standard="ISAAR" />
+                <MetadataField label="Créditos de Producción" value={item.contexto.creditosProduccion} standard="FIAF/FIAT" />
+                <MetadataField label="Historia Institucional / Biográfica" value={item.contexto.historiaInstitucional} standard="ISAAR" />
+                <MetadataField label="Historia Archivística" value={item.contexto.historiaArchivistica} standard="ISAD" />
+                <MetadataField label="Forma de Ingreso" value={item.contexto.formaIngreso} standard="ISAD" />
+              </MetadataSection>
 
-          {/* 3. Área de Contenido y Estructura */}
-          <MetadataSection title="3. Área de Contenido y Estructura" icon={FileText}>
-            <MetadataField label="Alcance y Contenido / Sinopsis" value={item.contenido.alcanceContenido} standard="ISAD/FIAF" />
-            <MetadataField label="Palabras Clave (Tags)" value={item.contenido.palabrasClave} standard="ISAD" />
-            <MetadataField label="Sistema de Organización" value={item.contenido.sistemaOrganizacion} standard="ISAD" />
-            <MetadataField label="Valoración y Selección" value={item.contenido.valoracionSeleccion} standard="ISAD" />
-            <MetadataField label="Plazo de Conservación" value={item.contenido.plazoConservacion} standard="ISAD" />
-            {item.contenido.puntosAccesoTimecodes && (
-              <tr className="border-b border-omeka-border group hover:bg-white transition-colors">
-                <td className="py-2.5 px-4 w-1/3 align-top bg-zinc-50/50 group-hover:bg-white border-r border-omeka-border">
-                  <div className="flex flex-col gap-1">
-                    <span className="text-[11px] font-bold text-zinc-600 leading-tight">Puntos de Acceso / Timecodes</span>
-                    <span className="text-[8px] font-black text-white bg-zinc-400 px-1.5 py-0.5 rounded-sm uppercase tracking-tighter w-fit">FIAT</span>
-                  </div>
-                </td>
-                <td className="py-2.5 px-4">
-                  <div className="space-y-2">
-                    {item.contenido.puntosAccesoTimecodes.map((tc, i) => (
-                      <div key={i} className="flex items-center gap-3 text-xs">
-                        <span className="font-mono bg-zinc-100 px-1.5 py-0.5 rounded border border-zinc-200 text-zinc-600">{tc.time}</span>
-                        <span className="font-medium text-zinc-900">{tc.label}</span>
+              {/* 3. Área de Contenido y Estructura */}
+              <MetadataSection title="3. Área de Contenido y Estructura" icon={FileText}>
+                <MetadataField label="Alcance y Contenido / Sinopsis" value={item.contenido.alcanceContenido} standard="ISAD/FIAF" />
+                <MetadataField label="Palabras Clave (Tags)" value={item.contenido.palabrasClave} standard="ISAD" />
+                <MetadataField label="Sistema de Organización" value={item.contenido.sistemaOrganizacion} standard="ISAD" />
+                <MetadataField label="Valoración y Selección" value={item.contenido.valoracionSeleccion} standard="ISAD" />
+                <MetadataField label="Plazo de Conservación" value={item.contenido.plazoConservacion} standard="ISAD" />
+                {item.contenido.puntosAccesoTimecodes && (
+                  <tr className="border-b border-omeka-border group hover:bg-white transition-colors">
+                    <td className="py-2.5 px-4 w-1/3 align-top bg-zinc-50/50 group-hover:bg-white border-r border-omeka-border">
+                      <div className="flex flex-col gap-1">
+                        <span className="text-[11px] font-bold text-zinc-600 leading-tight">Puntos de Acceso / Timecodes</span>
+                        <span className="text-[8px] font-black text-white bg-zinc-400 px-1.5 py-0.5 rounded-sm uppercase tracking-tighter w-fit">FIAT</span>
                       </div>
-                    ))}
-                  </div>
-                </td>
-              </tr>
-            )}
-          </MetadataSection>
+                    </td>
+                    <td className="py-2.5 px-4">
+                      <div className="space-y-2">
+                        {item.contenido.puntosAccesoTimecodes.map((tc, i) => (
+                          <div key={i} className="flex items-center gap-3 text-xs">
+                            <span className="font-mono bg-zinc-100 px-1.5 py-0.5 rounded border border-zinc-200 text-zinc-600">{tc.time}</span>
+                            <span className="font-medium text-zinc-900">{tc.label}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </MetadataSection>
 
-          {/* 4. Área Técnica y Soporte */}
-          <MetadataSection title="4. Área Técnica y Soporte" icon={Settings}>
-            <MetadataField label="Extensión y Soporte" value={item.tecnica.extensionSoporte} standard="ISAD" />
-            <MetadataField label="Formato Digital (MIME Type)" value={item.tecnica.formatoDigital} standard="FIAF" />
-            <MetadataField label="Duración" value={item.tecnica.duracion} standard="FIAT/FIAF" />
-            <MetadataField label="Hash de Integridad (NAS)" value={item.tecnica.hashDigital} />
-            
-            {item.tecnica.caracteristicasVideo && (
-              <tr className="border-b border-omeka-border group hover:bg-white transition-colors">
-                <td className="py-2.5 px-4 w-1/3 align-top bg-zinc-50/50 group-hover:bg-white border-r border-omeka-border">
-                  <div className="flex flex-col gap-1">
-                    <span className="text-[11px] font-bold text-zinc-600 leading-tight">Características de Video</span>
-                    <span className="text-[8px] font-black text-white bg-zinc-400 px-1.5 py-0.5 rounded-sm uppercase tracking-tighter w-fit">FIAT</span>
-                  </div>
-                </td>
-                <td className="py-2.5 px-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="flex items-center gap-2 text-xs">
-                      <Monitor size={12} className="text-zinc-400" />
-                      <span className="text-zinc-500">Res:</span> <span className="font-bold">{item.tecnica.caracteristicasVideo.resolucion}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-xs">
-                      <FileText size={12} className="text-zinc-400" />
-                      <span className="text-zinc-500">Ratio:</span> <span className="font-bold">{item.tecnica.caracteristicasVideo.aspectRatio}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-xs">
-                      <Settings size={12} className="text-zinc-400" />
-                      <span className="text-zinc-500">Bitrate:</span> <span className="font-bold">{item.tecnica.caracteristicasVideo.bitrate}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-xs">
-                      <Clock size={12} className="text-zinc-400" />
-                      <span className="text-zinc-500">FPS:</span> <span className="font-bold">{item.tecnica.caracteristicasVideo.fps}</span>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            )}
+              {/* 4. Área Técnica y Soporte */}
+              <MetadataSection title="4. Área Técnica y Soporte" icon={Settings}>
+                <MetadataField label="Extensión y Soporte" value={item.tecnica.extensionSoporte} standard="ISAD" />
+                <MetadataField label="Formato Digital (MIME Type)" value={item.tecnica.formatoDigital} standard="FIAF" />
+                <MetadataField label="Duración" value={item.tecnica.duracion} standard="FIAT/FIAF" />
+                <MetadataField label="Hash de Integridad (NAS)" value={item.tecnica.hashDigital} />
+                
+                {item.tecnica.caracteristicasVideo && (
+                  <tr className="border-b border-omeka-border group hover:bg-white transition-colors">
+                    <td className="py-2.5 px-4 w-1/3 align-top bg-zinc-50/50 group-hover:bg-white border-r border-omeka-border">
+                      <div className="flex flex-col gap-1">
+                        <span className="text-[11px] font-bold text-zinc-600 leading-tight">Características de Video</span>
+                        <span className="text-[8px] font-black text-white bg-zinc-400 px-1.5 py-0.5 rounded-sm uppercase tracking-tighter w-fit">FIAT</span>
+                      </div>
+                    </td>
+                    <td className="py-2.5 px-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="flex items-center gap-2 text-xs">
+                          <Monitor size={12} className="text-zinc-400" />
+                          <span className="text-zinc-500">Res:</span> <span className="font-bold">{item.tecnica.caracteristicasVideo.resolucion}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs">
+                          <FileText size={12} className="text-zinc-400" />
+                          <span className="text-zinc-500">Ratio:</span> <span className="font-bold">{item.tecnica.caracteristicasVideo.aspectRatio}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs">
+                          <Settings size={12} className="text-zinc-400" />
+                          <span className="text-zinc-500">Bitrate:</span> <span className="font-bold">{item.tecnica.caracteristicasVideo.bitrate}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs">
+                          <Clock size={12} className="text-zinc-400" />
+                          <span className="text-zinc-500">FPS:</span> <span className="font-bold">{item.tecnica.caracteristicasVideo.fps}</span>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                )}
 
-            {item.tecnica.caracteristicasAudio && (
-              <tr className="border-b border-omeka-border group hover:bg-white transition-colors">
-                <td className="py-2.5 px-4 w-1/3 align-top bg-zinc-50/50 group-hover:bg-white border-r border-omeka-border">
-                  <div className="flex flex-col gap-1">
-                    <span className="text-[11px] font-bold text-zinc-600 leading-tight">Características de Audio</span>
-                    <span className="text-[8px] font-black text-white bg-zinc-400 px-1.5 py-0.5 rounded-sm uppercase tracking-tighter w-fit">FIAT</span>
-                  </div>
-                </td>
-                <td className="py-2.5 px-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="flex items-center gap-2 text-xs">
-                      <Volume2 size={12} className="text-zinc-400" />
-                      <span className="text-zinc-500">Canales:</span> <span className="font-bold">{item.tecnica.caracteristicasAudio.canales}</span>
+                {item.tecnica.caracteristicasAudio && (
+                  <tr className="border-b border-omeka-border group hover:bg-white transition-colors">
+                    <td className="py-2.5 px-4 w-1/3 align-top bg-zinc-50/50 group-hover:bg-white border-r border-omeka-border">
+                      <div className="flex flex-col gap-1">
+                        <span className="text-[11px] font-bold text-zinc-600 leading-tight">Características de Audio</span>
+                        <span className="text-[8px] font-black text-white bg-zinc-400 px-1.5 py-0.5 rounded-sm uppercase tracking-tighter w-fit">FIAT</span>
+                      </div>
+                    </td>
+                    <td className="py-2.5 px-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="flex items-center gap-2 text-xs">
+                          <Volume2 size={12} className="text-zinc-400" />
+                          <span className="text-zinc-500">Canales:</span> <span className="font-bold">{item.tecnica.caracteristicasAudio.canales}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs">
+                          <Settings size={12} className="text-zinc-400" />
+                          <span className="text-zinc-500">Sample:</span> <span className="font-bold">{item.tecnica.caracteristicasAudio.sampleRate}</span>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+
+                <MetadataField label="Estado de Conservación" value={item.tecnica.estadoConservacion} standard="FIAF" />
+                <MetadataField label="Requisitos de Software" value={item.tecnica.requisitosSoftware} standard="ISAD" />
+              </MetadataSection>
+
+              {/* 5. Área de Acceso y Uso */}
+              <MetadataSection title="5. Área de Acceso y Uso" icon={Shield}>
+                <MetadataField label="Condiciones de Acceso" value={item.acceso.condicionesAcceso} standard="ISAD" />
+                <MetadataField label="Condiciones de Reproducción" value={item.acceso.condicionesReproduccion} standard="ISAD" />
+                <MetadataField label="Licencia de Uso / Derechos" value={item.acceso.licenciaUso} standard="ISAD/FIAF" />
+                <MetadataField label="Lengua / Escritura" value={item.acceso.lenguaEscritura} standard="ISAD" />
+                <MetadataField label="Disponibilidad de Originales" value={item.acceso.disponibilidadOriginales} standard="ISAD" />
+                <MetadataField label="Unidades Relacionadas" value={item.acceso.unidadesRelacionadas} standard="ISAD" />
+                <MetadataField label="Publicaciones Relacionadas" value={item.acceso.publicacionesRelacionadas} standard="ISAD" />
+              </MetadataSection>
+
+              {/* 6. Área de Control */}
+              <MetadataSection title="6. Área de Control (Metadoc)" icon={LinkIcon}>
+                <MetadataField label="Reglas de Descripción" value={item.control.reglasConvenciones} standard="ISAD" />
+                <MetadataField label="Estado de Elaboración" value={item.control.estadoElaboracion} />
+                <MetadataField label="Fecha de la Descripción" value={item.control.fechaDescripcion} standard="ISAD" />
+                <MetadataField label="Institución Responsable" value={item.control.institucionResponsable} standard="ISDIAH" />
+                <MetadataField label="Responsable de la Ficha" value={item.control.responsableFicha} standard="ISAAR" />
+                <MetadataField label="Notas del Archivero" value={item.control.notas} />
+              </MetadataSection>
+            </div>
+          )}
+
+          {activeTab === "media" && (
+            <div className="space-y-6 animate-in fade-in duration-300">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {item.media?.map((m, i) => (
+                  <div key={i} className="bg-zinc-50 border border-omeka-border rounded-sm overflow-hidden flex flex-col shadow-sm group">
+                    <div className="aspect-video bg-zinc-200 relative overflow-hidden">
+                      <div className="absolute inset-0 flex items-center justify-center text-zinc-400 group-hover:scale-110 transition-transform duration-500">
+                        {m.tipo.includes('video') ? <Monitor size={48} /> : <FileText size={48} />}
+                      </div>
+                      <div className="absolute top-2 right-2 bg-black/50 text-white text-[8px] font-black px-1.5 py-0.5 rounded-sm uppercase tracking-widest">
+                        {m.tipo}
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2 text-xs">
-                      <Settings size={12} className="text-zinc-400" />
-                      <span className="text-zinc-500">Sample:</span> <span className="font-bold">{item.tecnica.caracteristicasAudio.sampleRate}</span>
+                    <div className="p-4 bg-white border-t border-omeka-border">
+                      <h4 className="text-xs font-bold text-zinc-900 mb-1">{m.titulo}</h4>
+                      <p className="text-[10px] text-zinc-400 font-mono mb-3 uppercase">{m.size || 'Unknown size'}</p>
+                      <div className="flex gap-2">
+                        <a 
+                          href={m.url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex-1 flex items-center justify-center gap-2 py-1.5 bg-zinc-100 text-zinc-700 rounded-sm text-[10px] font-black uppercase tracking-widest hover:bg-zinc-200 transition-colors"
+                        >
+                          <ExternalLink size={12} />
+                          View File
+                        </a>
+                      </div>
                     </div>
                   </div>
-                </td>
-              </tr>
-            )}
+                ))}
+                {(!item.media || item.media.length === 0) && (
+                  <div className="col-span-full py-12 flex flex-col items-center justify-center text-zinc-400 bg-zinc-50 border border-dashed border-zinc-200 rounded-sm">
+                    <HardDrive size={32} className="mb-2 opacity-50" />
+                    <p className="text-xs font-bold">No media attachments found.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
-            <MetadataField label="Estado de Conservación" value={item.tecnica.estadoConservacion} standard="FIAF" />
-            <MetadataField label="Requisitos de Software" value={item.tecnica.requisitosSoftware} standard="ISAD" />
-          </MetadataSection>
-
-          {/* 5. Área de Acceso y Uso */}
-          <MetadataSection title="5. Área de Acceso y Uso" icon={Shield}>
-            <MetadataField label="Condiciones de Acceso" value={item.acceso.condicionesAcceso} standard="ISAD" />
-            <MetadataField label="Condiciones de Reproducción" value={item.acceso.condicionesReproduccion} standard="ISAD" />
-            <MetadataField label="Licencia de Uso / Derechos" value={item.acceso.licenciaUso} standard="ISAD/FIAF" />
-            <MetadataField label="Lengua / Escritura" value={item.acceso.lenguaEscritura} standard="ISAD" />
-            <MetadataField label="Disponibilidad de Originales" value={item.acceso.disponibilidadOriginales} standard="ISAD" />
-            <MetadataField label="Unidades Relacionadas" value={item.acceso.unidadesRelacionadas} standard="ISAD" />
-            <MetadataField label="Publicaciones Relacionadas" value={item.acceso.publicacionesRelacionadas} standard="ISAD" />
-          </MetadataSection>
-
-          {/* 6. Área de Control */}
-          <MetadataSection title="6. Área de Control (Metadoc)" icon={LinkIcon}>
-            <MetadataField label="Reglas de Descripción" value={item.control.reglasConvenciones} standard="ISAD" />
-            <MetadataField label="Estado de Elaboración" value={item.control.estadoElaboracion} />
-            <MetadataField label="Fecha de la Descripción" value={item.control.fechaDescripcion} standard="ISAD" />
-            <MetadataField label="Institución Responsable" value={item.control.institucionResponsable} standard="ISDIAH" />
-            <MetadataField label="Responsable de la Ficha" value={item.control.responsableFicha} standard="ISAAR" />
-            <MetadataField label="Notas del Archivero" value={item.control.notas} />
-          </MetadataSection>
+          {activeTab === "linked" && (
+            <div className="space-y-6 animate-in fade-in duration-300">
+              <div className="bg-zinc-50 border border-omeka-border rounded-sm p-8 flex flex-col items-center justify-center text-zinc-400">
+                <LinkIcon size={32} className="mb-2 opacity-50" />
+                <p className="text-xs font-bold">No linked resources found for this item.</p>
+                <p className="text-[10px] mt-1">Archival hierarchy links will appear here.</p>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Sidebar Info */}

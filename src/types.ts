@@ -112,4 +112,11 @@ export interface ArchivalItem {
   // Visuals
   thumbnailUrl?: string;
   previewUrl?: string;
+  media?: {
+    id: string;
+    titulo: string;
+    tipo: string;
+    url: string;
+    size?: string;
+  }[];
 }

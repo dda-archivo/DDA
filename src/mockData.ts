@@ -58,6 +58,15 @@ export const mockItems: ArchivalItem[] = [
       notas: "Restaurado en 2010 por el equipo de conservación.",
     },
     thumbnailUrl: "https://picsum.photos/seed/archive1/400/300",
+    media: [
+      {
+        id: "m1",
+        titulo: "Acta de Fundación (PDF)",
+        tipo: "application/pdf",
+        url: "#",
+        size: "2.4 MB"
+      }
+    ]
   },
   {
     id: "AR-ARCH-AV-042",
@@ -127,6 +136,22 @@ export const mockItems: ArchivalItem[] = [
       notas: "Audio mejorado mediante filtros digitales en 2023.",
     },
     thumbnailUrl: "https://picsum.photos/seed/video1/400/300",
+    media: [
+      {
+        id: "m2",
+        titulo: "Discurso 1968 (Master)",
+        tipo: "video/mp4",
+        url: "#",
+        size: "1.2 GB"
+      },
+      {
+        id: "m3",
+        titulo: "Fotograma Clave",
+        tipo: "image/jpeg",
+        url: "#",
+        size: "450 KB"
+      }
+    ]
   },
   {
     id: "AR-ARCH-PH-105",
@@ -178,5 +203,14 @@ export const mockItems: ArchivalItem[] = [
       notas: "Limpieza química realizada en 2022.",
     },
     thumbnailUrl: "https://picsum.photos/seed/photo1/400/300",
+    media: [
+      {
+        id: "m4",
+        titulo: "Negativo Escaneado (TIFF)",
+        tipo: "image/tiff",
+        url: "#",
+        size: "45 MB"
+      }
+    ]
   }
 ];

@@ -20,7 +20,8 @@ import {
   Settings, 
   Shield, 
   Link as LinkIcon,
-  X
+  X,
+  HardDrive,
 } from "lucide-react";
 
 interface ItemFormProps {
@@ -28,7 +29,7 @@ interface ItemFormProps {
   onSave: (item: Partial<ArchivalItem>) => void;
 }
 
-type FormTab = "identificacion" | "contexto" | "contenido" | "tecnica" | "acceso" | "control";
+type FormTab = "identificacion" | "contexto" | "contenido" | "tecnica" | "acceso" | "control" | "media";
 
 export default function ItemForm({ onBack, onSave }: ItemFormProps) {
   const [activeTab, setActiveTab] = useState<FormTab>("identificacion");
@@ -73,7 +74,8 @@ export default function ItemForm({ onBack, onSave }: ItemFormProps) {
       fechaDescripcion: new Date().toISOString().split('T')[0],
       institucionResponsable: "Departamento de Documentación y Archivo - UNT",
       responsableFicha: "",
-    }
+    },
+    media: []
   });
 
   const handleInputChange = (section: keyof ArchivalItem, field: string, value: any, subfield?: string) => {
@@ -99,6 +101,48 @@ export default function ItemForm({ onBack, onSave }: ItemFormProps) {
   const handleTagsChange = (tagsString: string) => {
     const tags = tagsString.split(',').map(tag => tag.trim()).filter(tag => tag !== "");
     handleInputChange('contenido', 'palabrasClave', tags);
+  };
+
+  const handleAddTimecode = () => {
+    setFormData(prev => {
+      const timecodes = [...(prev.contenido?.puntosAccesoTimecodes || [])];
+      timecodes.push({ time: "00:00:00", label: "" });
+      return {
+        ...prev,
+        contenido: {
+          ...prev.contenido!,
+          puntosAccesoTimecodes: timecodes
+        }
+      };
+    });
+  };
+
+  const handleRemoveTimecode = (index: number) => {
+    setFormData(prev => {
+      const timecodes = [...(prev.contenido?.puntosAccesoTimecodes || [])];
+      timecodes.splice(index, 1);
+      return {
+        ...prev,
+        contenido: {
+          ...prev.contenido!,
+          puntosAccesoTimecodes: timecodes
+        }
+      };
+    });
+  };
+
+  const handleTimecodeChange = (index: number, field: 'time' | 'label', value: string) => {
+    setFormData(prev => {
+      const timecodes = [...(prev.contenido?.puntosAccesoTimecodes || [])];
+      timecodes[index] = { ...timecodes[index], [field]: value };
+      return {
+        ...prev,
+        contenido: {
+          ...prev.contenido!,
+          puntosAccesoTimecodes: timecodes
+        }
+      };
+    });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -151,6 +195,7 @@ export default function ItemForm({ onBack, onSave }: ItemFormProps) {
     { id: "tecnica", label: "4. Técnica", icon: Settings },
     { id: "acceso", label: "5. Acceso", icon: Shield },
     { id: "control", label: "6. Control", icon: LinkIcon },
+    { id: "media", label: "7. Media", icon: HardDrive },
   ];
 
   return (
@@ -268,6 +313,54 @@ export default function ItemForm({ onBack, onSave }: ItemFormProps) {
                 {renderField("Sistema de Organización (ISAD)", "contenido", "sistemaOrganizacion")}
                 {renderField("Valoración y Selección (ISAD)", "contenido", "valoracionSeleccion", "textarea")}
                 {renderField("Plazo de Conservación (ISAD)", "contenido", "plazoConservacion")}
+
+                <div className="mt-8 pt-6 border-t border-zinc-100">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Puntos de Acceso / Timecodes (FIAT)</h3>
+                    <button 
+                      type="button"
+                      onClick={handleAddTimecode}
+                      className="text-[10px] font-bold text-omeka-blue hover:underline"
+                    >
+                      + ADD TIMECODE
+                    </button>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    {formData.contenido?.puntosAccesoTimecodes?.map((tc, index) => (
+                      <div key={index} className="flex gap-3 items-start">
+                        <div className="w-32">
+                          <input 
+                            type="text"
+                            placeholder="00:00:00"
+                            value={tc.time}
+                            onChange={(e) => handleTimecodeChange(index, 'time', e.target.value)}
+                            className="w-full bg-zinc-50 border border-zinc-200 rounded-sm px-3 py-2 text-xs font-mono focus:ring-1 focus:ring-omeka-blue focus:border-omeka-blue outline-none transition-all"
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <input 
+                            type="text"
+                            placeholder="Description of the scene..."
+                            value={tc.label}
+                            onChange={(e) => handleTimecodeChange(index, 'label', e.target.value)}
+                            className="w-full bg-zinc-50 border border-zinc-200 rounded-sm px-3 py-2 text-xs focus:ring-1 focus:ring-omeka-blue focus:border-omeka-blue outline-none transition-all"
+                          />
+                        </div>
+                        <button 
+                          type="button"
+                          onClick={() => handleRemoveTimecode(index)}
+                          className="p-2 text-zinc-400 hover:text-red-500 transition-colors"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    ))}
+                    {(!formData.contenido?.puntosAccesoTimecodes || formData.contenido.puntosAccesoTimecodes.length === 0) && (
+                      <p className="text-[11px] text-zinc-400 italic">No timecodes added yet.</p>
+                    )}
+                  </div>
+                </div>
               </div>
             )}
 
@@ -329,6 +422,59 @@ export default function ItemForm({ onBack, onSave }: ItemFormProps) {
                 {renderField("Institución Responsable (ISDIAH)", "control", "institucionResponsable")}
                 {renderField("Responsable de la Ficha (ISAAR)", "control", "responsableFicha")}
                 {renderField("Notas del Archivero", "control", "notas", "textarea")}
+              </div>
+            )}
+
+            {activeTab === "media" && (
+              <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                <div className="flex items-center gap-2 pb-4 border-b border-zinc-100 mb-6">
+                  <HardDrive size={18} className="text-omeka-blue" />
+                  <h2 className="text-sm font-black text-zinc-700 uppercase tracking-widest">Media Attachments</h2>
+                </div>
+                
+                <div className="bg-zinc-50 border border-dashed border-zinc-300 rounded-sm p-8 flex flex-col items-center justify-center text-center">
+                  <div className="w-12 h-12 bg-zinc-100 rounded-full flex items-center justify-center mb-4 text-zinc-400">
+                    <HardDrive size={24} />
+                  </div>
+                  <h3 className="text-xs font-bold text-zinc-900 mb-1 tracking-tight">Connect to NAS to upload media</h3>
+                  <p className="text-[10px] text-zinc-500 max-w-[200px] leading-relaxed">
+                    Media files are stored on the departmental NAS. Use the NAS Connector to sync files.
+                  </p>
+                  <button 
+                    type="button"
+                    className="mt-4 px-4 py-1.5 bg-white border border-zinc-200 rounded-sm text-[10px] font-black uppercase tracking-widest hover:bg-zinc-50 transition-colors"
+                  >
+                    Open NAS Browser
+                  </button>
+                </div>
+
+                <div className="mt-8">
+                  <h3 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-4">Linked Media</h3>
+                  <div className="space-y-2">
+                    {formData.media?.map((m, i) => (
+                      <div key={i} className="flex items-center justify-between p-3 bg-white border border-zinc-200 rounded-sm shadow-sm">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-zinc-100 rounded flex items-center justify-center text-zinc-400">
+                            <FileText size={14} />
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-xs font-bold text-zinc-900 leading-none">{m.titulo}</span>
+                            <span className="text-[9px] font-mono text-zinc-400 mt-1 uppercase">{m.tipo} • {m.size}</span>
+                          </div>
+                        </div>
+                        <button 
+                          type="button"
+                          className="p-1.5 text-zinc-400 hover:text-red-500 transition-colors"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    ))}
+                    {(!formData.media || formData.media.length === 0) && (
+                      <p className="text-[11px] text-zinc-400 italic">No media attached yet.</p>
+                    )}
+                  </div>
+                </div>
               </div>
             )}
 
