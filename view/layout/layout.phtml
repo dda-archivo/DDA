@@ -11,7 +11,16 @@ $this->headMeta()->setCharset('utf-8');
 $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1');
 $this->headTitle($siteTitle)->setSeparator(' · ');
 $this->headTitle()->append($this->setting('installation_title', 'Omeka S'));
-$this->headLink()->prependStylesheet($this->assetUrl('css/style.css'));
+
+// Bootstrap 5 CSS
+$this->headLink()->prependStylesheet('https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css');
+// Font Awesome
+$this->headLink()->appendStylesheet('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+// Custom CSS
+$this->headLink()->appendStylesheet($this->assetUrl('css/style.css'));
+
+// Bootstrap 5 JS
+$this->headScript()->appendFile('https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js');
 ?>
 <?php echo $this->doctype(); ?>
 <?php echo $this->htmlElement('html'); ?>
@@ -23,27 +32,32 @@ $this->headLink()->prependStylesheet($this->assetUrl('css/style.css'));
         <?php echo $this->headScript(); ?>
     </head>
     <?php echo $this->htmlElement('body'); ?>
-        <header class="main-header">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
             <div class="container">
-                <h1><?php echo $site->link($siteTitle); ?></h1>
-                <nav class="main-nav">
-                    <?php echo $site->publicNav()->menu()->render(); ?>
-                </nav>
+                <a class="navbar-brand" href="<?php echo $site->url(); ?>">
+                    <?php echo $escape($siteTitle); ?>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <?php echo $site->publicNav()->menu()->renderMenu(null, [
+                        'ulClass' => 'navbar-nav ms-auto',
+                        'liClass' => 'nav-item',
+                        'aClass' => 'nav-link',
+                    ]); ?>
+                </div>
             </div>
-        </header>
+        </nav>
 
-        <main class="main-content">
-            <div class="container">
-                <?php echo $this->content; ?>
-            </div>
+        <main class="container mb-5">
+            <?php echo $this->content; ?>
         </main>
 
-        <footer class="main-footer">
-            <div class="container">
-                <p><?php echo $this->themeSetting('footer_text'); ?></p>
-                <div class="credits">
-                    &copy; <?php echo date('Y'); ?> <?php echo $escape($siteTitle); ?> - DDA UNT
-                </div>
+        <footer class="bg-light py-4 border-top mt-auto">
+            <div class="container text-center">
+                <p class="mb-0 text-muted">&copy; <?php echo date('Y'); ?> <?php echo $escape($siteTitle); ?> - DDA UNT</p>
+                <small class="text-muted">Desarrollado bajo normas ISAD(G), ISAAR(CPF), ISDIAH, FIAF y FIAT.</small>
             </div>
         </footer>
     </body>

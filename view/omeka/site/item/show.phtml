@@ -1,0 +1,135 @@
+<?php
+/**
+ * @var \Omeka\View\Renderer\PhpRenderer $this
+ * @var \Omeka\Api\Representation\ItemRepresentation $item
+ * @var \Omeka\Api\Representation\SiteRepresentation $site
+ */
+$escape = $this->plugin('escapeHtml');
+$this->htmlElement('body')->appendAttribute('class', 'item show');
+$itemTitle = $item->displayTitle();
+$this->headTitle($itemTitle);
+?>
+
+<div class="dda-metadata-container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <?php 
+            $media = $item->media();
+            if ($media): ?>
+                <div class="item-thumbnail mb-3">
+                    <?php echo $this->thumbnail($item, 'large', ['class' => 'img-fluid rounded shadow-sm']); ?>
+                </div>
+            <?php endif; ?>
+        </div>
+        <div class="col-md-8">
+            <h1 class="display-5 mb-3"><?php echo $escape($itemTitle); ?></h1>
+            <p class="lead text-muted"><?php echo $item->displayDescription(); ?></p>
+        </div>
+    </div>
+
+    <!-- Pestañas de Metadatos -->
+    <ul class="nav nav-tabs mb-4" id="ddaMetadataTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="identificacion-tab" data-bs-toggle="tab" data-bs-target="#identificacion" type="button" role="tab" aria-controls="identificacion" aria-selected="true">
+                <i class="fas fa-id-card me-2"></i>Identificación
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="contexto-tab" data-bs-toggle="tab" data-bs-target="#contexto" type="button" role="tab" aria-controls="contexto" aria-selected="false">
+                <i class="fas fa-history me-2"></i>Contexto
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="contenido-tab" data-bs-toggle="tab" data-bs-target="#contenido" type="button" role="tab" aria-controls="contenido" aria-selected="false">
+                <i class="fas fa-align-left me-2"></i>Contenido
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="acceso-tab" data-bs-toggle="tab" data-bs-target="#acceso" type="button" role="tab" aria-controls="acceso" aria-selected="false">
+                <i class="fas fa-lock-open me-2"></i>Acceso
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tecnica-tab" data-bs-toggle="tab" data-bs-target="#tecnica" type="button" role="tab" aria-controls="tecnica" aria-selected="false">
+                <i class="fas fa-tools me-2"></i>Técnica
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="control-tab" data-bs-toggle="tab" data-bs-target="#control" type="button" role="tab" aria-controls="control" aria-selected="false">
+                <i class="fas fa-check-double me-2"></i>Control
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content border rounded p-4 bg-white shadow-sm" id="ddaMetadataTabsContent">
+        <!-- Identificación -->
+        <div class="tab-pane fade show active" id="identificacion" role="tabpanel" aria-labelledby="identificacion-tab">
+            <h4 class="mb-3">Área de Identificación</h4>
+            <?php echo $item->displayValues(['property' => 'dcterms:identifier']); ?>
+            <?php echo $item->displayValues(['property' => 'dcterms:title']); ?>
+            <?php echo $item->displayValues(['property' => 'dcterms:date']); ?>
+            <?php echo $item->displayValues(['property' => 'dcterms:type']); ?>
+            <!-- Agrega aquí más propiedades específicas de identificación -->
+        </div>
+
+        <!-- Contexto -->
+        <div class="tab-pane fade" id="contexto" role="tabpanel" aria-labelledby="contexto-tab">
+            <h4 class="mb-3">Área de Contexto</h4>
+            <?php echo $item->displayValues(['property' => 'dcterms:creator']); ?>
+            <?php echo $item->displayValues(['property' => 'dcterms:provenance']); ?>
+            <?php echo $item->displayValues(['property' => 'dcterms:source']); ?>
+        </div>
+
+        <!-- Contenido -->
+        <div class="tab-pane fade" id="contenido" role="tabpanel" aria-labelledby="contenido-tab">
+            <h4 class="mb-3">Área de Contenido y Estructura</h4>
+            <?php echo $item->displayValues(['property' => 'dcterms:description']); ?>
+            <?php echo $item->displayValues(['property' => 'dcterms:subject']); ?>
+            <?php echo $item->displayValues(['property' => 'dcterms:tableOfContents']); ?>
+        </div>
+
+        <!-- Acceso -->
+        <div class="tab-pane fade" id="acceso" role="tabpanel" aria-labelledby="acceso-tab">
+            <h4 class="mb-3">Área de Condiciones de Acceso y Uso</h4>
+            <?php echo $item->displayValues(['property' => 'dcterms:accessRights']); ?>
+            <?php echo $item->displayValues(['property' => 'dcterms:license']); ?>
+            <?php echo $item->displayValues(['property' => 'dcterms:rights']); ?>
+            <?php echo $item->displayValues(['property' => 'dcterms:language']); ?>
+        </div>
+
+        <!-- Técnica -->
+        <div class="tab-pane fade" id="tecnica" role="tabpanel" aria-labelledby="tecnica-tab">
+            <h4 class="mb-3">Área de Notas Técnicas</h4>
+            <?php echo $item->displayValues(['property' => 'dcterms:format']); ?>
+            <?php echo $item->displayValues(['property' => 'dcterms:extent']); ?>
+            <?php echo $item->displayValues(['property' => 'dcterms:medium']); ?>
+        </div>
+
+        <!-- Control -->
+        <div class="tab-pane fade" id="control" role="tabpanel" aria-labelledby="control-tab">
+            <h4 class="mb-3">Área de Control de la Descripción</h4>
+            <?php echo $item->displayValues(['property' => 'dcterms:bibliographicCitation']); ?>
+            <?php echo $item->displayValues(['property' => 'dcterms:modified']); ?>
+        </div>
+    </div>
+
+    <!-- Archivos Adjuntos -->
+    <?php if ($media): ?>
+    <div class="mt-5">
+        <h3><i class="fas fa-paperclip me-2"></i>Archivos Adjuntos</h3>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <?php foreach ($media as $m): ?>
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title"><?php echo $m->displayTitle(); ?></h5>
+                        <p class="card-text small text-muted"><?php echo $m->mediaType(); ?></p>
+                        <?php echo $m->render(); ?>
+                    </div>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php endif; ?>
+</div>
